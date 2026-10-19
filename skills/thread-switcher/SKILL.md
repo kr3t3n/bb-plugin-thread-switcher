@@ -18,5 +18,6 @@ only the bb app.
 
 If the dropdown does not open after a bb upgrade, the thread header markup
 probably changed. The plugin finds the title with the `.bb-thread-title`
-selector inside `.app-page-header-content-row`, next to
+selector inside the header row
+`[data-testid='app-page-header-content-row']`, which also holds
 `[data-thread-header-pane-actions]`.

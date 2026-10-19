@@ -3,7 +3,7 @@
 // Click the thread name in a thread header to open a dropdown of every active
 // thread, the one that most recently needed attention first. bb has no slot
 // for the title itself, so an app overlay listens for clicks on the title
-// element (`.bb-thread-title` in a thread header) and draws its own
+// element (`.bb-thread-title` in a thread header row) and draws its own
 // portalled dropdown under it. A double click still renames the thread.
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
@@ -28,11 +28,13 @@ import {
 
 /** The thread name in a thread header (not in other page headers). */
 const TITLE_SELECTOR = ".bb-thread-title";
-const HEADER_SELECTOR = ".app-page-header-content-row";
+const HEADER_SELECTOR = "[data-testid='app-page-header-content-row']";
 const THREAD_HEADER_MARKER = "[data-thread-header-pane-actions]";
 /** Wait this long after a click so a double click can still rename. */
 const DOUBLE_CLICK_GRACE_MS = 250;
 const DROPDOWN_WIDTH = 440;
+/** Draw at most this many rows; the filter still searches every thread. */
+const MAX_ROWS = 100;
 const STYLE_ID = "bb-plugin-thread-switcher-style";
 
 interface OpenState {
@@ -48,7 +50,7 @@ function findThreadTitle(target: EventTarget | null): HTMLElement | null {
   // The rename editor replaces the title while it is open.
   if (title.closest("input, textarea, [contenteditable='true']")) return null;
   const header = title.closest(HEADER_SELECTOR);
-  if (!header?.parentElement?.querySelector(THREAD_HEADER_MARKER)) return null;
+  if (!header?.querySelector(THREAD_HEADER_MARKER)) return null;
   return title;
 }
 
@@ -144,10 +146,11 @@ function ThreadSwitcherDropdown({
     [projects],
   );
   const ordered = useMemo(() => orderThreadsByAttention(threads), [threads]);
-  const visible = useMemo(
+  const matches = useMemo(
     () => filterThreads(ordered, query, projectNames),
     [ordered, query, projectNames],
   );
+  const visible = matches.slice(0, MAX_ROWS);
   const showProject = projects.length > 1;
 
   useEffect(() => setHighlight(0), [query]);
@@ -269,7 +272,10 @@ function ThreadSwitcherDropdown({
         )}
       </ul>
       <div className="border-t border-border px-3 py-1.5 text-xs text-muted-foreground">
-        Enter opens · ⌘/Ctrl+Enter opens in a split · Esc closes
+        {matches.length > visible.length
+          ? `${visible.length} of ${matches.length} shown, type to filter · `
+          : ""}
+        Enter opens · ⌘/Ctrl+Enter splits · Esc closes
       </div>
     </div>,
     document.body,
