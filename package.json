@@ -1,6 +1,16 @@
 {
   "name": "bb-plugin-thread-switcher",
   "version": "0.1.0",
+  "description": "Click the thread name in a bb thread header to switch to any active thread.",
+  "license": "MIT",
+  "author": {
+    "name": "Georgi Pepelyankov",
+    "url": "https://github.com/kr3t3n"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kr3t3n/bb-plugin-thread-switcher.git"
+  },
   "type": "module",
   "engines": {
     "bb": ">=0.46",

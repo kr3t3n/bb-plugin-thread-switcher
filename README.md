@@ -5,6 +5,12 @@ threads. The thread that most recently needed attention is first.
 
 See [PLUGIN_OVERVIEW.md](PLUGIN_OVERVIEW.md) for the behaviour.
 
+## Install
+
+```sh
+bb plugin install git:https://github.com/kr3t3n/bb-plugin-thread-switcher.git
+```
+
 ## Develop
 
 ```sh
@@ -20,3 +26,7 @@ bb plugin dev     # rebuild and reload on save
   title and draws the dropdown.
 - `lib/order.ts` holds the sort, filter, and age helpers.
 - `server.ts` is an empty backend. bb requires one.
+
+## License
+
+MIT
